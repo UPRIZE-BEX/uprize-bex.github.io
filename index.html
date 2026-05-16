@@ -580,7 +580,13 @@ body::before {
   color: var(--text-faint);
 }
 @media (max-width: 640px) {
-  .credit { display: none; }
+  .credit {
+    right: 14px;
+    bottom: 12px;
+    max-width: calc(100vw - 28px);
+    font-size: 8px;
+    letter-spacing: 0.28em;
+  }
 }
 /* ===== COUNTDOWN (normal flow, centered) ===== */
 .countdown-wrap {
