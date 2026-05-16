@@ -582,6 +582,52 @@ body::before {
 @media (max-width: 640px) {
   .credit { display: none; }
 }
+/* ===== COUNTDOWN (bottom center) ===== */
+.countdown-wrap {
+  position: fixed;
+  left: 50%;
+  bottom: 18px;
+  transform: translateX(-50%);
+  z-index: 70;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.countdown {
+  display: flex;
+  gap: 18px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,108,108,0.12);
+  padding: 12px 20px;
+  border-radius: 28px;
+  backdrop-filter: blur(6px);
+  box-shadow: 0 8px 30px rgba(0,0,0,0.6);
+  align-items: center;
+}
+.countdown .part {
+  text-align: center;
+  min-width: 58px;
+}
+.countdown .value {
+  font-family: var(--display);
+  font-size: 18px;
+  color: #dfe8ea;
+  letter-spacing: 0.06em;
+}
+.countdown .label {
+  font-family: var(--sans);
+  font-size: 10px;
+  color: var(--text-faint);
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  margin-top: 4px;
+}
+
+/* When intro overlay is visible, lift countdown up by the same gap as between the buttons and the description */
+.intro:not(.hidden) ~ .countdown-wrap {
+  bottom: calc(18px + 24px);
+  transition: bottom .36s ease;
+}
 </style>
 </head>
 <body>
@@ -658,6 +704,16 @@ body::before {
 
 <!-- Credit -->
 <div class="credit">Whiterose × BE[X]YOND</div>
+
+<!-- Countdown -->
+<div class="countdown-wrap" aria-hidden="false">
+  <div class="countdown" id="countdown">
+    <div class="part"><div class="value" id="cdDays">00</div><div class="label">Days</div></div>
+    <div class="part"><div class="value" id="cdHours">00</div><div class="label">Hours</div></div>
+    <div class="part"><div class="value" id="cdMinutes">00</div><div class="label">Minutes</div></div>
+    <div class="part"><div class="value" id="cdSeconds">00</div><div class="label">Seconds</div></div>
+  </div>
+</div>
 
 <script>
 'use strict';
@@ -946,6 +1002,42 @@ function addWish(w, isNew = false) {
 })();
 
 window.addEventListener('resize', () => hideTooltip());
+// ===== Countdown to 2026-06-23 00:00 (local time) =====
+(function initCountdown(){
+  const elDays = document.getElementById('cdDays');
+  const elHours = document.getElementById('cdHours');
+  const elMinutes = document.getElementById('cdMinutes');
+  const elSeconds = document.getElementById('cdSeconds');
+
+  // Target: 23 June 2026 00:00 local
+  const target = new Date(2026, 5, 23, 0, 0, 0, 0).getTime();
+
+  function update() {
+    const now = Date.now();
+    let diff = Math.max(0, target - now);
+
+    const days = Math.floor(diff / 86400000);
+    diff -= days * 86400000;
+    const hours = Math.floor(diff / 3600000);
+    diff -= hours * 3600000;
+    const minutes = Math.floor(diff / 60000);
+    diff -= minutes * 60000;
+    const seconds = Math.floor(diff / 1000);
+
+    elDays.textContent = String(days).padStart(2, '0');
+    elHours.textContent = String(hours).padStart(2, '0');
+    elMinutes.textContent = String(minutes).padStart(2, '0');
+    elSeconds.textContent = String(seconds).padStart(2, '0');
+
+    if (target - now <= 0) {
+      // Optionally show expired state
+      clearInterval(update._t);
+    }
+  }
+
+  update();
+  update._t = setInterval(update, 1000);
+})();
 </script>
 
 </body>
