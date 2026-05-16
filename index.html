@@ -582,26 +582,27 @@ body::before {
 @media (max-width: 640px) {
   .credit { display: none; }
 }
-/* ===== COUNTDOWN (bottom center) ===== */
+/* ===== COUNTDOWN (normal flow, centered) ===== */
 .countdown-wrap {
-  position: fixed;
-  left: 50%;
-  bottom: 18px;
-  transform: translateX(-50%);
-  z-index: 70;
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 0;
+  background: transparent;
+}
+.intro .countdown-wrap {
+  padding: 0;
+  margin-top: 0;
 }
 .countdown {
   display: flex;
   gap: 18px;
   background: rgba(255,255,255,0.03);
-  border: 1px solid rgba(255,108,108,0.12);
+  border: 1px solid rgba(255, 255, 255, 0.25);
   padding: 12px 20px;
   border-radius: 28px;
   backdrop-filter: blur(6px);
-  box-shadow: 0 8px 30px rgba(0,0,0,0.6);
+  box-shadow: 0 8px 30px rgba(0,0,0,0.4);
   align-items: center;
 }
 .countdown .part {
@@ -665,6 +666,15 @@ body::before {
     <a class="btn" id="introOpenForm">Gửi lời nhắn</a>
     <a class="btn btn-ghost" id="introViewSky">Xem bầu trời</a>
   </div>
+  <!-- Countdown inside intro -->
+  <div class="countdown-wrap" id="countdownWrap" aria-hidden="false" style="margin-top: 24px;">
+    <div class="countdown" id="countdown">
+      <div class="part"><div class="value" id="cdDays">00</div><div class="label">Days</div></div>
+      <div class="part"><div class="value" id="cdHours">00</div><div class="label">Hours</div></div>
+      <div class="part"><div class="value" id="cdMinutes">00</div><div class="label">Minutes</div></div>
+      <div class="part"><div class="value" id="cdSeconds">00</div><div class="label">Seconds</div></div>
+    </div>
+  </div>
 </div>
 
 <!-- Add-wish floating button on sky -->
@@ -704,16 +714,6 @@ body::before {
 
 <!-- Credit -->
 <div class="credit">Whiterose × BE[X]YOND</div>
-
-<!-- Countdown -->
-<div class="countdown-wrap" id="countdownWrap" aria-hidden="false">
-  <div class="countdown" id="countdown">
-    <div class="part"><div class="value" id="cdDays">00</div><div class="label">Days</div></div>
-    <div class="part"><div class="value" id="cdHours">00</div><div class="label">Hours</div></div>
-    <div class="part"><div class="value" id="cdMinutes">00</div><div class="label">Minutes</div></div>
-    <div class="part"><div class="value" id="cdSeconds">00</div><div class="label">Seconds</div></div>
-  </div>
-</div>
 
 <script>
 'use strict';
@@ -910,7 +910,6 @@ async function handleSubmit() {
 
   closeModal();
   intro.classList.add('hidden');
-  setTimeout(() => adjustCountdownPosition(), 120);
   addFab.style.display = 'flex';
   showToast();
   inpMsg.value = '';
@@ -930,12 +929,10 @@ $('introOpenForm').addEventListener('click', () => {
   intro.classList.add('hidden');
   addFab.style.display = 'flex';
   openModal();
-  setTimeout(() => adjustCountdownPosition(), 120);
 });
 $('introViewSky').addEventListener('click', () => {
   intro.classList.add('hidden');
   addFab.style.display = 'flex';
-  setTimeout(() => adjustCountdownPosition(), 120);
 });
 $('addBtn').addEventListener('click', openModal);
 $('modalClose').addEventListener('click', closeModal);
@@ -1002,38 +999,10 @@ function addWish(w, isNew = false) {
       addWish(normalize(payload.new), true);
     })
     .subscribe();
-  setTimeout(() => adjustCountdownPosition(), 120);
 })();
 
 window.addEventListener('resize', () => hideTooltip());
-// Adjust countdown position so it doesn't overlap intro content
-function adjustCountdownPosition() {
-  const cd = document.getElementById('countdownWrap');
-  if (!cd) return;
-  const btn = document.getElementById('introViewSky');
-  const desc = document.querySelector('.intro p.desc');
-  const defaultBottom = 18; // px
 
-  // If intro is hidden, restore default
-  if (!desc || !btn || !document.getElementById('intro') || document.getElementById('intro').classList.contains('hidden')) {
-    cd.style.bottom = defaultBottom + 'px';
-    return;
-  }
-
-  const btnRect = btn.getBoundingClientRect();
-  const descRect = desc.getBoundingClientRect();
-  const gap = Math.max(8, Math.round(btnRect.top - descRect.bottom)); // px, at least 8px
-  const cdH = cd.offsetHeight || 64;
-  const viewportH = window.innerHeight;
-
-  // We want countdown top = btn.bottom + gap
-  const desiredTop = btnRect.bottom + gap;
-  let bottomPx = Math.round(viewportH - desiredTop - cdH);
-  if (bottomPx < 8) bottomPx = 8;
-  cd.style.bottom = bottomPx + 'px';
-}
-
-window.addEventListener('resize', () => adjustCountdownPosition());
 // ===== Countdown to 2026-06-23 00:00 (local time) =====
 (function initCountdown(){
   const elDays = document.getElementById('cdDays');
