@@ -6,7 +6,7 @@
 <title>BE[X]YOND — Sky of Wishes for Cường Bạch</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Cinzel:wght@400;500;600;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;700;800;900&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Cinzel:wght@400;500;600;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 :root {
@@ -25,12 +25,13 @@
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
-html, body { height: 100%; }
+html, body { min-height: 100%; }
 body {
   background: radial-gradient(ellipse at center, #0a0408 0%, #050305 60%, #000 100%);
   color: var(--text);
   font-family: var(--serif);
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
   position: relative;
 }
 
@@ -48,6 +49,15 @@ body::before {
 
 /* ===== Background twinkle stars ===== */
 .bg-stars { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+.music-frame {
+  position: fixed;
+  width: 1px;
+  height: 1px;
+  left: -10px;
+  top: -10px;
+  opacity: 0;
+  pointer-events: none;
+}
 .bg-star {
   position: absolute;
   width: 1.5px; height: 1.5px;
@@ -72,13 +82,15 @@ body::before {
   justify-content: space-between;
   align-items: center;
   pointer-events: none;
+  background: linear-gradient(180deg, rgba(0,0,0,0.98) 0%, rgba(5,3,5,0.94) 58%, rgba(5,3,5,0.82) 100%);
+  backdrop-filter: blur(16px);
 }
 .topbar > * { pointer-events: auto; }
 .logo {
-  font-family: var(--sans);
+  font-family: "Be Vietnam Pro", var(--sans);
   font-size: 18px;
-  letter-spacing: 0.2em;
-  font-weight: 500;
+  letter-spacing: 0.12em;
+  font-weight: 900;
   background: linear-gradient(180deg, #fff 0%, #d9d6d2 50%, #a8a4a0 100%);
   -webkit-background-clip: text;
   background-clip: text;
@@ -107,20 +119,20 @@ body::before {
 
 /* ===== INTRO OVERLAY ===== */
 .intro {
-  position: fixed;
-  inset: 0;
+  position: relative;
+  min-height: 100vh;
   z-index: 40;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  padding: 20px 24px;
+  justify-content: flex-start;
+  padding: 72px 24px 80px;
   text-align: center;
   background: radial-gradient(ellipse at center, rgba(10,4,8,0.85) 0%, rgba(0,0,0,0.95) 70%);
   backdrop-filter: blur(6px);
   transition: opacity .8s ease, visibility .8s ease;
 }
-.intro.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+.intro.hidden { display: none; opacity: 0; visibility: hidden; pointer-events: none; }
 .intro-tag {
   font-family: var(--sans);
   font-size: 11px;
@@ -354,15 +366,13 @@ body::before {
 
 /* ===== ADD WISH BUTTON (sky view) ===== */
 .add-fab {
-  position: fixed;
-  bottom: 40px;
-  left: 50%;
-  transform: translateX(-50%);
+  position: relative;
   z-index: 50;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 12px;
+  margin: 40px auto 96px;
 }
 .add-fab .hint {
   font-family: var(--sans);
@@ -372,7 +382,7 @@ body::before {
   color: var(--text-faint);
 }
 @media (max-width: 640px) {
-  .add-fab { bottom: 24px; }
+  .add-fab { margin: 28px auto 80px; }
   .add-fab .btn { padding: 14px 28px; font-size: 10px; }
 }
 
@@ -590,44 +600,77 @@ body::before {
 }
 /* ===== COUNTDOWN (normal flow, centered) ===== */
 .countdown-wrap {
+  width: min(620px, calc(100vw - 48px));
+  aspect-ratio: 823 / 214;
+  max-width: calc(100vw - 48px);
+  margin: 0 auto;
+  padding: 60px 54px 26px;
+  background: url("assests/countdown.png") center / 100% 100% no-repeat;
+  position: relative;
+  overflow: visible;
   display: flex;
-  align-items: center;
+  flex-direction: column;
   justify-content: center;
-  padding: 0;
-  background: transparent;
 }
 .intro .countdown-wrap {
-  padding: 0;
   margin-top: 0;
 }
 .countdown {
   display: flex;
-  gap: 18px;
-  background: rgba(255,255,255,0.03);
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  padding: 12px 20px;
-  border-radius: 28px;
-  backdrop-filter: blur(6px);
-  box-shadow: 0 8px 30px rgba(0,0,0,0.4);
   align-items: center;
+  justify-content: center;
+  gap: 20px;
 }
-.countdown .part {
+.time-box {
   text-align: center;
-  min-width: 58px;
+  min-width: 72px;
 }
-.countdown .value {
-  font-family: var(--display);
-  font-size: 18px;
-  color: #dfe8ea;
-  letter-spacing: 0.06em;
+.time-box div {
+  font-family: var(--serif);
+  font-size: 38px;
+  line-height: 1;
+  color: var(--text);
+  font-weight: 500;
+  text-shadow:
+    0 0 12px rgba(255,255,255,.15),
+    0 0 24px rgba(255,120,160,.12);
 }
-.countdown .label {
+.time-box small {
+  display: block;
+  margin-top: 8px;
   font-family: var(--sans);
   font-size: 10px;
-  color: var(--text-faint);
-  letter-spacing: 0.3em;
-  text-transform: uppercase;
-  margin-top: 4px;
+  letter-spacing: 4px;
+  color: var(--silver);
+}
+.divider {
+  width: 1px;
+  height: 32px;
+  background: linear-gradient(to bottom, transparent, rgba(255,255,255,.45), transparent);
+  opacity: .5;
+}
+@media (max-width: 640px) {
+  .countdown-wrap {
+    width: min(420px, calc(100vw - 32px));
+    max-width: calc(100vw - 32px);
+    padding: 14px 30px 18px;
+  }
+  .countdown {
+    gap: 8px;
+  }
+  .time-box {
+    min-width: 50px;
+  }
+  .time-box div {
+    font-size: 28px;
+  }
+  .time-box small {
+    font-size: 7px;
+    letter-spacing: 1.6px;
+  }
+  .divider {
+    height: 26px;
+  }
 }
 
 /* When intro overlay is visible, lift countdown up by the same gap as between the buttons and the description */
@@ -641,17 +684,19 @@ body::before {
 
 <!-- Background twinkle stars -->
 <div class="bg-stars" id="bgStars"></div>
+<iframe id="musicPlayer" class="music-frame" aria-hidden="true" frameborder="0" allow="autoplay"></iframe>
+<audio id="bgMusic" src="assests/Ng%C3%A2n%20nga.m4a" preload="auto" autoplay loop></audio>
 
 <!-- Top bar -->
 <div class="topbar">
-  <div class="logo">h3t.onlyforcb</div>
+  <div class="logo">H3T.ONLYFORCB</div>
   <div class="counter"><strong id="counter">0</strong>LỜI NHẮN</div>
 </div>
 
 <!-- Sky canvas -->
 <div class="sky" id="sky">
   <div class="empty" id="empty">
-    <p>Chưa có ngôi sao nào trên bầu trời.<br>Hãy là người đầu tiên thắp lên một lời nhắn cho Cường.</p>
+    <p>Chưa có ngôi sao nào trên bầu trời.<br>Hãy là người đầu tiên gửi lời nhắn cho Cường.</p>
   </div>
 </div>
 
@@ -665,7 +710,7 @@ body::before {
 
 <!-- Intro overlay -->
 <div class="intro" id="intro">
-  <img src="assests/LOGO-NOTAGLINE.png" alt="BE[X]YOND Logo" style="max-width: 80%; height: auto; margin-bottom: 20px;">
+  <img src="assests/LOGO-NOTAGLINE.png" alt="BE[X]YOND Logo" style="max-width: 80%; height: auto; margin-bottom: 12px;">
   <p class="sub">Sky of Wishes</p>
   <p class="desc">Mỗi lời chúc bạn gửi tới Cường sẽ trở thành một ngôi sao trên bầu trời này — và sẽ ở đó mãi, cùng với hàng nghìn lời chúc khác từ fandom.</p>
   <div style="display:flex; gap:14px; flex-wrap:wrap; justify-content:center;">
@@ -673,12 +718,27 @@ body::before {
     <a class="btn btn-ghost" id="introViewSky">Xem bầu trời</a>
   </div>
   <!-- Countdown inside intro -->
-  <div class="countdown-wrap" id="countdownWrap" aria-hidden="false" style="margin-top: 24px;">
+  <div class="countdown-wrap" id="countdownWrap" aria-hidden="false" style="margin-top: 18px;">
     <div class="countdown" id="countdown">
-      <div class="part"><div class="value" id="cdDays">00</div><div class="label">Days</div></div>
-      <div class="part"><div class="value" id="cdHours">00</div><div class="label">Hours</div></div>
-      <div class="part"><div class="value" id="cdMinutes">00</div><div class="label">Minutes</div></div>
-      <div class="part"><div class="value" id="cdSeconds">00</div><div class="label">Seconds</div></div>
+      <div class="time-box">
+        <div id="days">00</div>
+        <small>DAYS</small>
+      </div>
+      <div class="divider"></div>
+      <div class="time-box">
+        <div id="hours">00</div>
+        <small>HOURS</small>
+      </div>
+      <div class="divider"></div>
+      <div class="time-box">
+        <div id="minutes">00</div>
+        <small>MINUTES</small>
+      </div>
+      <div class="divider"></div>
+      <div class="time-box">
+        <div id="seconds">00</div>
+        <small>SECONDS</small>
+      </div>
     </div>
   </div>
 </div>
@@ -686,7 +746,7 @@ body::before {
 <!-- Add-wish floating button on sky -->
 <div class="add-fab" id="addFab" style="display:none;">
   <div class="hint">Rê chuột vào sao để đọc lời nhắn</div>
-  <button class="btn" id="addBtn">+ Thắp một ngôi sao</button>
+  <button class="btn" id="addBtn">+ Gửi một ngôi sao</button>
 </div>
 
 <!-- Form modal -->
@@ -694,7 +754,7 @@ body::before {
   <div class="modal">
     <button class="modal-close" id="modalClose" aria-label="Close">×</button>
     <div class="modal-tag">A wish for Cường</div>
-    <h2 class="modal-title">Thắp lên <em>một ngôi sao</em></h2>
+    <h2 class="modal-title">Gửi <em>một ngôi sao</em></h2>
     <p class="modal-sub">Một dòng nhắn nhỏ của bạn sẽ trở thành một đốm sáng trong bầu trời chung — nơi mọi lời chúc cùng nhau toả sáng.</p>
 
     <div class="field">
@@ -710,13 +770,13 @@ body::before {
 
     <div class="modal-actions">
       <button class="btn btn-ghost" id="modalCancel">Để sau</button>
-      <button class="btn" id="modalSubmit">Thắp sao</button>
+      <button class="btn" id="modalSubmit">Gửi sao</button>
     </div>
   </div>
 </div>
 
 <!-- Success toast -->
-<div class="toast" id="toast">✨ Ngôi sao của bạn đã được thắp lên</div>
+<div class="toast" id="toast">✨ Ngôi sao của bạn đã được gửi</div>
 
 <!-- Credit -->
 <div class="credit">Whiterose × BE[X]YOND</div>
@@ -748,6 +808,29 @@ const inpName = $('inpName');
 const inpMsg = $('inpMsg');
 const charCount = $('charCount');
 const toast = $('toast');
+const bgMusic = $('bgMusic');
+const musicPlayer = $('musicPlayer');
+let musicFrameLoaded = false;
+
+function loadMusicFrame() {
+  if (!musicPlayer || musicFrameLoaded) return;
+  musicFrameLoaded = true;
+  musicPlayer.srcdoc = '<!doctype html><html><body style="margin:0;overflow:hidden;background:transparent;"><audio id="music" src="assests/Ng%C3%A2n%20nga.m4a" autoplay loop playsinline></audio><script>const music=document.getElementById("music");music.volume=0.45;function play(){music.play().catch(function(){});}play();window.addEventListener("load",play);setInterval(play,1500);<\/script></body></html>';
+}
+
+function playBackgroundMusic() {
+  if (bgMusic && bgMusic.paused) {
+    bgMusic.volume = 0.45;
+    bgMusic.play().catch(loadMusicFrame);
+    return;
+  }
+  loadMusicFrame();
+}
+
+document.addEventListener('DOMContentLoaded', playBackgroundMusic);
+window.addEventListener('load', playBackgroundMusic);
+window.addEventListener('pageshow', playBackgroundMusic);
+setTimeout(playBackgroundMusic, 300);
 
 // ============ Render background twinkle stars ============
 (function renderBgStars() {
@@ -906,7 +989,7 @@ async function handleSubmit() {
     size: pos.size,
   }).select().single();
 
-  submitBtn.textContent = 'Thắp sao';
+  submitBtn.textContent = 'Gửi sao';
   submitBtn.disabled = false;
 
   if (error) { console.error(error); alert('Lỗi khi gửi. Thử lại nhé!'); return; }
@@ -932,11 +1015,13 @@ function showToast() {
 
 // ============ Event wiring ============
 $('introOpenForm').addEventListener('click', () => {
+  playBackgroundMusic();
   intro.classList.add('hidden');
   addFab.style.display = 'flex';
   openModal();
 });
 $('introViewSky').addEventListener('click', () => {
+  playBackgroundMusic();
   intro.classList.add('hidden');
   addFab.style.display = 'flex';
 });
@@ -996,7 +1081,7 @@ function addWish(w, isNew = false) {
   renderSky();
 
   if (wishes.length === 0) {
-    emptyEl.querySelector('p').innerHTML = 'Chưa có ngôi sao nào trên bầu trời.<br>Hãy là người đầu tiên thắp lên một lời nhắn cho Cường.';
+    emptyEl.querySelector('p').innerHTML = 'Chưa có ngôi sao nào trên bầu trời.<br>Hãy là người đầu tiên gửi lời nhắn cho Cường.';
   }
 
   // Realtime: nhận wish mới từ tất cả mọi người (kể cả chính mình nếu chưa seen)
@@ -1011,10 +1096,10 @@ window.addEventListener('resize', () => hideTooltip());
 
 // ===== Countdown to 2026-06-23 00:00 (local time) =====
 (function initCountdown(){
-  const elDays = document.getElementById('cdDays');
-  const elHours = document.getElementById('cdHours');
-  const elMinutes = document.getElementById('cdMinutes');
-  const elSeconds = document.getElementById('cdSeconds');
+  const elDays = document.getElementById('days');
+  const elHours = document.getElementById('hours');
+  const elMinutes = document.getElementById('minutes');
+  const elSeconds = document.getElementById('seconds');
 
   // Target: 23 June 2026 00:00 local
   const target = new Date(2026, 5, 23, 0, 0, 0, 0).getTime();
