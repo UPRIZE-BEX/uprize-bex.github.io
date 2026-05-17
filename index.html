@@ -91,6 +91,10 @@ body::before {
   align-items: center;
   width: 140px;
   height: 40px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
 }
 .logo img {
   display: block;
@@ -98,6 +102,7 @@ body::before {
   max-height: 100%;
   object-fit: contain;
 }
+.logo:hover { opacity: 0.82; }
 .counter {
   font-family: var(--sans);
   font-size: 11px;
@@ -748,7 +753,7 @@ body::before {
 
 <!-- Top bar -->
 <div class="topbar">
-  <div class="logo"><img src="assests/h3t.png" alt="H3T.ONLYFORCB"></div>
+  <button class="logo" id="homeLogo" type="button" aria-label="Về trang chủ"><img src="assests/h3t.png" alt="H3T.ONLYFORCB"></button>
   <div class="counter"><strong id="counter">0</strong>LỜI NHẮN</div>
 </div>
 
@@ -1108,7 +1113,16 @@ function showToast() {
   showToast._t = setTimeout(() => toast.classList.remove('show'), 3000);
 }
 
+function showHome() {
+  closeModal();
+  hideTooltip();
+  intro.classList.remove('hidden');
+  addFab.style.display = 'none';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
 // ============ Event wiring ============
+$('homeLogo').addEventListener('click', showHome);
 $('introOpenForm').addEventListener('click', () => {
   playBackgroundMusic();
   intro.classList.add('hidden');
