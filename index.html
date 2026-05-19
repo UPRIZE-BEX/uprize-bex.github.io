@@ -943,7 +943,17 @@ const SKY_BOUNDS = {
 };
 
 function randomStarSize() {
-  return 9 + Math.pow(Math.random(), 2.2) * 3; // 9px - 12px, smaller stars appear more often
+  const roll = Math.random();
+
+  if (roll < 0.5) {
+    return 9 + Math.random() * 2; // 50%: 9px - 11px
+  }
+
+  if (roll < 0.8) {
+    return 12 + Math.random(); // 30%: 12px - 13px
+  }
+
+  return 14 + Math.random(); // 20%: 14px - 15px
 }
 
 function clamp(value, min, max) {
