@@ -48,7 +48,47 @@ body::before {
 }
 
 /* ===== Background twinkle stars ===== */
-.bg-stars { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+.bg-stars { position: fixed; inset: 0; z-index: 3; pointer-events: none; }
+.meteor-sky {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  overflow: hidden;
+}
+.meteor {
+  position: absolute;
+  width: 170px;
+  height: 2px;
+  border-radius: 999px;
+  opacity: 0;
+  transform: rotate(-28deg);
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.95), var(--rose));
+  filter: drop-shadow(0 0 8px var(--rose));
+  animation: meteor 4.8s linear infinite;
+}
+.m1 { top: 110px; left: 10%; animation-delay: .1s; }
+.m2 { top: 190px; left: 72%; animation-delay: 1.8s; width: 230px; }
+.m3 { top: 46px; left: 48%; animation-delay: 3.2s; width: 120px; }
+.m4 { top: 335px; left: 20%; animation-delay: 4.4s; width: 145px; }
+@keyframes meteor {
+  0% {
+    opacity: 0;
+    transform: translate3d(260px,-160px,0) rotate(-28deg);
+  }
+  8% { opacity: 1; }
+  40% { opacity: .9; }
+  100% {
+    opacity: 0;
+    transform: translate3d(-780px,380px,0) rotate(-28deg);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .meteor { display: none; }
+}
+@media (max-width: 640px) {
+  .meteor-sky .meteor { width: 110px; }
+}
 .music-frame {
   position: fixed;
   width: 1px;
@@ -745,6 +785,12 @@ body::before {
 
 <!-- Background twinkle stars -->
 <div class="bg-stars" id="bgStars"></div>
+<div class="meteor-sky" id="meteorSky" aria-hidden="true">
+  <span class="meteor m1"></span>
+  <span class="meteor m2"></span>
+  <span class="meteor m3"></span>
+  <span class="meteor m4"></span>
+</div>
 <iframe id="musicPlayer" class="music-frame" aria-hidden="true" frameborder="0" allow="autoplay"></iframe>
 <audio id="bgMusic" src="assests/Ng%C3%A2n%20nga.m4a" preload="auto" autoplay loop></audio>
 
@@ -830,8 +876,8 @@ body::before {
     </div>
 
     <div class="modal-actions">
-      <button class="btn btn-ghost" id="modalCancel">Để sau</button>
-      <button class="btn" id="modalSubmit">Gửi sao</button>
+      <button class="btn btn-ghost" id="modalCancel">Xem bầu trời</button>
+      <button class="btn" id="modalSubmit">Gửi lời nhắn</button>
     </div>
   </div>
 </div>
@@ -1159,7 +1205,7 @@ async function handleSubmit() {
     size: pos.size,
   }).select().single();
 
-  submitBtn.textContent = 'Gửi sao';
+  submitBtn.textContent = 'Gửi lời nhắn';
   submitBtn.disabled = false;
 
   if (error) { console.error(error); alert('Lỗi khi gửi. Thử lại nhé!'); return; }
