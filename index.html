@@ -27,7 +27,10 @@
 * { margin: 0; padding: 0; box-sizing: border-box; }
 html, body { min-height: 100%; }
 body {
-  background: radial-gradient(ellipse at center, #0a0408 0%, #050305 60%, #000 100%);
+  background:
+    radial-gradient(ellipse at center, rgba(10,4,8,0.2) 0%, rgba(5,3,5,0.58) 58%, rgba(0,0,0,0.88) 100%),
+    url("assests/galaxy.jpg") center / cover fixed no-repeat,
+    #000;
   color: var(--text);
   font-family: var(--serif);
   overflow-x: hidden;
@@ -58,29 +61,29 @@ body::before {
 }
 .meteor {
   position: absolute;
-  width: 170px;
-  height: 2px;
+  width: 240px;
+  height: 1px;
   border-radius: 999px;
   opacity: 0;
-  transform: rotate(-28deg);
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.95), var(--rose));
-  filter: drop-shadow(0 0 8px var(--rose));
-  animation: meteor 4.8s linear infinite;
+  transform: rotate(-27deg);
+  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.08) 18%, rgba(255,232,232,0.52) 72%, rgba(255,255,255,0.9) 100%);
+  box-shadow: 0 0 5px rgba(255,220,220,0.34);
+  animation: meteor 6.6s linear infinite;
 }
-.m1 { top: 110px; left: 10%; animation-delay: .1s; }
-.m2 { top: 190px; left: 72%; animation-delay: 1.8s; width: 230px; }
-.m3 { top: 46px; left: 48%; animation-delay: 3.2s; width: 120px; }
-.m4 { top: 335px; left: 20%; animation-delay: 4.4s; width: 145px; }
+.m1 { top: 150px; left: 4%; animation-delay: .2s; width: 320px; }
+.m2 { top: 235px; left: 58%; animation-delay: 1.7s; width: 280px; animation-duration: 7.4s; }
+.m3 { top: 88px; left: 38%; animation-delay: 3.1s; width: 210px; animation-duration: 6.1s; }
+.m4 { top: 420px; left: 22%; animation-delay: 4.8s; width: 300px; animation-duration: 8s; }
 @keyframes meteor {
   0% {
     opacity: 0;
-    transform: translate3d(260px,-160px,0) rotate(-28deg);
+    transform: translate3d(240px,-140px,0) rotate(-27deg);
   }
-  8% { opacity: 1; }
-  40% { opacity: .9; }
+  7% { opacity: .7; }
+  28% { opacity: .5; }
   100% {
     opacity: 0;
-    transform: translate3d(-780px,380px,0) rotate(-28deg);
+    transform: translate3d(-840px,420px,0) rotate(-27deg);
   }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -308,15 +311,15 @@ body::before {
   cursor: pointer;
   transform: translate(-50%, -50%);
   z-index: 5;
-  --size: 9px;
+  --size: 5px;
   width: var(--size);
   height: var(--size);
 }
 .wish-star::before {
   content: '';
   position: absolute;
-  inset: -5px;
-  background: radial-gradient(circle, rgba(255,180,180,0.32) 0%, transparent 65%);
+  inset: -4px;
+  background: radial-gradient(circle, rgba(255,180,180,0.26) 0%, transparent 68%);
   border-radius: 50%;
   transition: all .4s ease;
 }
@@ -326,9 +329,9 @@ body::before {
   border-radius: 50%;
   background: radial-gradient(circle, #fff 0%, #ffc6c6 50%, #ff8a8a 100%);
   box-shadow:
-    0 0 7px rgba(255,255,255,0.9),
-    0 0 16px rgba(255,180,180,0.55),
-    0 0 30px rgba(255,108,108,0.28);
+    0 0 4px rgba(255,255,255,0.9),
+    0 0 10px rgba(255,180,180,0.48),
+    0 0 18px rgba(255,108,108,0.2);
   animation: starPulse 3s ease-in-out infinite;
 }
 @keyframes starPulse {
@@ -989,17 +992,7 @@ const SKY_BOUNDS = {
 };
 
 function randomStarSize() {
-  const roll = Math.random();
-
-  if (roll < 0.5) {
-    return 9 + Math.random() * 2; // 50%: 9px - 11px
-  }
-
-  if (roll < 0.8) {
-    return 12 + Math.random(); // 30%: 12px - 13px
-  }
-
-  return 14 + Math.random(); // 20%: 14px - 15px
+  return 4 + Math.random() * 6; // 4px - 10px
 }
 
 function clamp(value, min, max) {
@@ -1059,7 +1052,7 @@ function generatePosition() {
   // Avoid the top bar and bottom button area, then prefer the least crowded cells.
   const grid = getSkyGrid();
   const cells = buildSkyCells(grid);
-  const baseMinDistance = window.innerWidth < 640 ? 26 : 34;
+  const baseMinDistance = window.innerWidth < 640 ? 18 : 24;
 
   for (let attempt = 0; attempt < 260; attempt++) {
     const allowedCrowding = Math.floor(attempt / 70);
@@ -1089,7 +1082,7 @@ function renderSky(newId = null) {
     el.className = 'wish-star' + (w.id === newId ? ' new' : '');
     el.style.left = w.x + '%';
     el.style.top = w.y + '%';
-    el.style.setProperty('--size', w.size + 'px');
+    el.style.setProperty('--size', clamp(Number(w.size) || 6, 4, 10) + 'px');
     el.dataset.id = w.id;
 
     const core = document.createElement('div');
